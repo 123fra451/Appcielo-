@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0c0814" />
+  <title>AppCielo — Tu cielo de aplicaciones</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --bg: #0c0814; --bg-2: #160d1d; --bg-3: #1d1226;
+      --surface: rgba(255, 255, 255, 0.045); --surface-2: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.09); --border-strong: rgba(255, 255, 255, 0.16);
+      --fg: #faf6f2; --muted: #a8a3b0; --muted-2: #7d7888;
+      --accent: #ff6b4a; --accent-2: #ffb547; --accent-3: #ff4e8a;
+      --accent-game: #4ade80; --accent-game-2: #22d3ee;
+    }
+    * { -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--fg); overflow-x: hidden; min-height: 100vh; }
+    .font-display { font-family: 'Bricolage Grotesque', sans-serif; font-variation-settings: 'opsz' 96; letter-spacing: -0.02em; }
+    .sky-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(255, 107, 74, 0.18), transparent 60%), radial-gradient(ellipse 60% 50% at 80% 30%, rgba(255, 78, 138, 0.14), transparent 60%), radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255, 181, 71, 0.10), transparent 60%), linear-gradient(180deg, #0c0814 0%, #160d1d 50%, #0c0814 100%); }
+    .sky-bg::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(1.5px 1.5px at 25px 35px, rgba(255,255,255,0.5), transparent), radial-gradient(1px 1px at 50px 80px, rgba(255,255,255,0.3), transparent), radial-gradient(1.5px 1.5px at 130px 50px, rgba(255,255,255,0.4), transparent), radial-gradient(1px 1px at 180px 110px, rgba(255,255,255,0.35), transparent), radial-gradient(2px 2px at 220px 160px, rgba(255,255,255,0.45), transparent); background-size: 250px 250px; background-repeat: repeat; opacity: 0.5; animation: twinkle 9s ease-in-out infinite; }
+    @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.7; } }
+    .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.35; animation: float 22s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(40px, -30px) scale(1.12); } 66% { transform: translate(-25px, 25px) scale(0.92); } }
+    .glass-header { background: rgba(12, 8, 20, 0.72); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .app-card { background: var(--surface); border: 1px solid var(--border); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.35s ease; cursor: pointer; }
+    .app-card:hover { background: var(--surface-2); border-color: rgba(255, 107, 74, 0.4); transform: translateY(-4px); box-shadow: 0 24px 50px -12px rgba(255, 107, 74, 0.18); }
+    .app-card:active { transform: translateY(-1px); }
+    .app-icon { width: 88px; height: 88px; border-radius: 22px; overflow: hidden; flex-shrink: 0; box-shadow: 0 12px 30px -8px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08) inset; }
+    .app-icon-lg { width: 128px; height: 128px; border-radius: 30px; }
+    .app-icon img, .app-icon-lg img, .app-icon svg, .app-icon-lg svg { width: 100%; height: 100%; display: block; object-fit: cover; }
+    .btn-download { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); color: #1a0a0a; font-weight: 700; transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.2s; position: relative; overflow: hidden; isolation: isolate; }
+    .btn-download::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--accent-2) 0%, var(--accent-3) 100%); opacity: 0; transition: opacity 0.3s; z-index: -1; }
+    .btn-download:hover::after { opacity: 1; }
+    .btn-download:hover { transform: translateY(-1px); box-shadow: 0 12px 30px -6px rgba(255, 107, 74, 0.55); }
+    .btn-download:active { transform: translateY(0); }
+    .btn-download:disabled { background: var(--surface-2); color: var(--muted); cursor: not-allowed; box-shadow: none; }
+    .btn-download:disabled::after { display: none; }
+    .btn-download-arrow { animation: bob 2.4s ease-in-out infinite; }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+    .btn-download.loading { pointer-events: none; opacity: 0.95; }
+    .spin { animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-progress-bar { position: absolute; bottom: 0; left: 0; height: 100%; background: rgba(26, 10, 10, 0.18); transition: width 0.25s ease; z-index: 0; }
+    .chip { background: var(--surface); border: 1px solid var(--border); color: var(--muted); transition: all 0.22s ease; white-space: nowrap; }
+    .chip:hover { background: var(--surface-2); border-color: rgba(255, 107, 74, 0.3); color: var(--fg); }
+    .chip.active { background: linear-gradient(135deg, var(--accent), var(--accent-3)); border-color: transparent; color: #1a0a0a; font-weight: 600; box-shadow: 0 8px 20px -6px rgba(255, 107, 74, 0.45); }
+    .modal-backdrop { background: rgba(6, 4, 12, 0.86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+    .modal-panel { transform: translateY(24px) scale(0.97); opacity: 0; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s; }
+    .modal-backdrop.active .modal-panel { transform: translateY(0) scale(1); opacity: 1; }
+    .modal-panel::-webkit-scrollbar { width: 8px; } .modal-panel::-webkit-scrollbar-track { background: transparent; } .modal-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+    .search-input { background: var(--surface); border: 1px solid var(--border); transition: all 0.25s ease; }
+    .search-input:focus { outline: none; border-color: rgba(255, 107, 74, 0.6); background: var(--surface-2); box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.14); }
+    .text-gradient { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 45%, var(--accent-3) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .logo-mark { animation: logoFloat 7s ease-in-out infinite; }
+    @keyframes logoFloat { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-6px) rotate(2deg); } }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translate(-50%, 120px); background: rgba(20, 12, 28, 0.96); backdrop-filter: blur(14px); border: 1px solid var(--border-strong); padding: 14px 22px; border-radius: 14px; font-size: 14px; transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1); z-index: 100; max-width: calc(100vw - 32px); display: flex; align-items: center; gap: 10px; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6); }
+    .toast.show { transform: translate(-50%, 0); }
+    .screenshot-frame { background: linear-gradient(135deg, rgba(255,107,74,0.08), rgba(255,78,138,0.05)); border: 1px dashed rgba(255, 107, 74, 0.3); }
+    .scrollbar-hide::-webkit-scrollbar { display: none; } .scrollbar-hide { scrollbar-width: none; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    .screenshots-strip { scroll-snap-type: x mandatory; } .screenshot-item { scroll-snap-align: start; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .water-glow { box-shadow: 0 12px 30px -8px rgba(120, 200, 255, 0.35), 0 0 0 1px rgba(255,255,255,0.08) inset; }
+    .art-glow { box-shadow: 0 12px 30px -8px rgba(255, 140, 60, 0.4), 0 0 0 1px rgba(255,255,255,0.08) inset; }
+    .lumo-glow { box-shadow: 0 12px 30px -8px rgba(180, 100, 255, 0.45), 0 0 0 1px rgba(255,255,255,0.08) inset; }
+    .curri-glow { box-shadow: 0 12px 30px -8px rgba(255, 78, 138, 0.4), 0 0 0 1px rgba(255,255,255,0.08) inset; }
+    .ani-glow { box-shadow: 0 12px 30px -8px rgba(255, 200, 60, 0.4), 0 0 0 1px rgba(255,255,255,0.08) inset; }
+    .game-glow { box-shadow: 0 12px 30px -8px rgba(74, 222, 128, 0.4), 0 0 0 1px rgba(255,255,255,0.08) inset; }
+    .games-banner { background: linear-gradient(135deg, rgba(74, 222, 128, 0.08) 0%, rgba(34, 211, 238, 0.08) 100%); border: 1px solid rgba(74, 222, 128, 0.25); }
+    .games-banner-icon { background: linear-gradient(135deg, var(--accent-game), var(--accent-game-2)); }
+    .empty-games-frame { background: linear-gradient(135deg, rgba(74, 222, 128, 0.06), rgba(34, 211, 238, 0.04)); border: 1px dashed rgba(74, 222, 128, 0.3); }
+    .dev-badge { background: linear-gradient(135deg, rgba(255, 107, 74, 0.12), rgba(255, 78, 138, 0.12)); border: 1px solid rgba(255, 107, 74, 0.25); }
+    .ig-btn { background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #fff; transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.2s; position: relative; overflow: hidden; isolation: isolate; }
+    .ig-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -6px rgba(220, 39, 67, 0.5); filter: brightness(1.1); }
+    .ig-btn:active { transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="sky-bg" aria-hidden="true">
+    <div class="blob" style="width: 420px; height: 420px; background: #ff6b4a; top: 8%; left: -6%;"></div>
+    <div class="blob" style="width: 520px; height: 520px; background: #ff4e8a; top: 38%; right: -12%; animation-delay: -7s;"></div>
+    <div class="blob" style="width: 360px; height: 360px; background: #ffb547; bottom: -5%; left: 28%; animation-delay: -14s;"></div>
+  </div>
+
+  <header class="glass-header sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#inicio" class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ff6b4a] to-[#ffb547] flex items-center justify-center logo-mark">
+          <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#1a0a0a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 1 0 0-9h-1.8A7 7 0 1 0 4 14.5"/></svg>
+        </div>
+        <span class="font-display font-bold text-xl">AppCielo</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-1" aria-label="Navegación principal">
+        <a href="#inicio" class="px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Inicio</a>
+        <a href="#destacadas" class="px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Destacadas</a>
+        <a href="#nuevas" class="px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Nuevas</a>
+        <a href="#juegos" class="px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Juegos</a>
+        <a href="#todas" class="px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Catálogo</a>
+        <a href="#acerca" class="px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Acerca de</a>
+      </nav>
+      <button class="md:hidden p-2 rounded-lg hover:bg-white/5 transition" id="mobile-menu-btn" aria-label="Abrir menú"><i data-lucide="menu" class="w-5 h-5"></i></button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden border-t border-[color:var(--border)] px-4 py-3 space-y-1">
+      <a href="#inicio" class="block px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Inicio</a>
+      <a href="#destacadas" class="block px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Destacadas</a>
+      <a href="#nuevas" class="block px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Nuevas</a>
+      <a href="#juegos" class="block px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Juegos</a>
+      <a href="#todas" class="block px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Catálogo</a>
+      <a href="#acerca" class="block px-3 py-2 text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">Acerca de</a>
+    </div>
+  </header>
+
+  <section id="inicio" class="relative pt-12 sm:pt-16 lg:pt-24 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col items-center text-center max-w-3xl mx-auto">
+        <div class="mb-7 logo-mark">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-[#ff6b4a] via-[#ff4e8a] to-[#ffb547] flex items-center justify-center" style="box-shadow: 0 25px 60px -15px rgba(255, 107, 74, 0.55), 0 0 0 1px rgba(255,255,255,0.1) inset;">
+            <svg viewBox="0 0 24 24" class="w-12 sm:w-14 h-12 sm:h-14" fill="none" stroke="#1a0a0a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 1 0 0-9h-1.8A7 7 0 1 0 4 14.5"/><circle cx="9" cy="6.5" r="1.2" fill="#1a0a0a"/><circle cx="14" cy="5" r="0.9" fill="#1a0a0a"/></svg>
+          </div>
+        </div>
+        <h1 class="font-display font-extrabold text-5xl sm:text-6xl lg:text-7xl leading-[1.02] mb-4">App<span class="text-gradient">Cielo</span></h1>
+        <p class="text-base sm:text-lg text-[color:var(--muted)] mb-9 max-w-xl leading-relaxed">Tu cielo personal de aplicaciones. Descarga, organiza y descubre — todo reunido en un solo lugar, a un toque de distancia.</p>
+        <div class="relative w-full max-w-xl">
+          <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[color:var(--muted)] pointer-events-none" aria-hidden="true"></i>
+          <input type="text" id="search" class="search-input w-full pl-12 pr-4 py-3.5 rounded-2xl text-base text-[color:var(--fg)] placeholder:text-[color:var(--muted)]" placeholder="Busca aplicaciones por nombre o categoría..." aria-label="Buscar aplicaciones" />
+        </div>
+        <div class="mt-4 flex items-center gap-2 text-xs text-[color:var(--muted-2)]"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i><span>Descargas directas · Sin registros · 100% offline</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-4" aria-label="Categorías"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide" id="categories"></div></div></section>
+  <section id="destacadas" class="py-10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex items-end justify-between mb-6 reveal"><div><h2 class="font-display font-bold text-2xl sm:text-3xl mb-1">Destacadas</h2><p class="text-sm text-[color:var(--muted)]">Seleccionadas especialmente para ti</p></div><div class="hidden sm:flex items-center gap-1.5 text-xs text-[color:var(--muted-2)]"><span class="w-2 h-2 rounded-full bg-[color:var(--accent)] animate-pulse"></span>Disponibles ahora</div></div><div id="featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"></div></div></section>
+  <section id="nuevas" class="py-10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex items-end justify-between mb-6 reveal"><div><h2 class="font-display font-bold text-2xl sm:text-3xl mb-1">Nuevas</h2><p class="text-sm text-[color:var(--muted)]">Las últimas incorporaciones al cielo</p></div></div><div id="new-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"></div></div></section>
+  <section id="juegos" class="py-10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="games-banner rounded-3xl p-6 sm:p-8 mb-6 reveal relative overflow-hidden"><div class="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-20" style="background: radial-gradient(circle, var(--accent-game), transparent 70%); filter: blur(30px);"></div><div class="relative flex items-center gap-4"><div class="w-14 h-14 rounded-2xl games-banner-icon flex items-center justify-center flex-shrink-0" style="box-shadow: 0 12px 30px -8px rgba(74, 222, 128, 0.4);"><i data-lucide="gamepad-2" class="w-7 h-7 text-[#0c0814]"></i></div><div class="flex-1"><h2 class="font-display font-bold text-2xl sm:text-3xl mb-1 flex items-center gap-2">Juegos<span id="games-count-badge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-[color:var(--surface-2)] border border-[color:var(--border)] text-[color:var(--muted)]"></span></h2><p class="text-sm text-[color:var(--muted)]">Explora todos los juegos disponibles en AppCielo</p></div><button class="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[color:var(--surface)] border border-[color:var(--border)] text-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] hover:border-[color:var(--border-strong)] transition" id="filter-games-btn"><i data-lucide="filter" class="w-4 h-4"></i><span>Filtrar juegos</span></button></div></div><div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"></div><div id="no-games" class="hidden text-center py-12"><div class="empty-games-frame rounded-2xl p-8 max-w-md mx-auto"><div class="w-16 h-16 mx-auto mb-4 rounded-2xl games-banner-icon flex items-center justify-center" style="box-shadow: 0 8px 20px -6px rgba(74, 222, 128, 0.35);"><i data-lucide="gamepad-2" class="w-8 h-8 text-[#0c0814]"></i></div><p class="font-display font-semibold text-lg mb-1">No hay juegos todavía</p><p class="text-sm text-[color:var(--muted)] mb-1">Los juegos que agregues aparecerán automáticamente aquí.</p><p class="text-xs text-[color:var(--muted-2)]">Para agregar un juego, usa la categoría <code>"Juegos"</code> en los datos de la app.</p></div></div></div></section>
+  <section id="todas" class="py-10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex items-end justify-between mb-6 reveal"><div><h2 class="font-display font-bold text-2xl sm:text-3xl mb-1">Todas las aplicaciones</h2><p class="text-sm text-[color:var(--muted)]">Explora el catálogo completo de AppCielo</p></div><span id="app-count" class="text-xs text-[color:var(--muted-2)]"></span></div><div id="all-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"></div><div id="no-results" class="hidden text-center py-16"><div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-[color:var(--surface)] border border-[color:var(--border)] flex items-center justify-center"><i data-lucide="search-x" class="w-6 h-6 text-[color:var(--muted)]"></i></div><p class="font-display font-semibold text-lg mb-1">Sin resultados</p><p class="text-sm text-[color:var(--muted)]">Prueba con otra búsqueda o categoría.</p></div></div></section>
+  <section id="acerca" class="py-12 sm:py-20 mt-8"><div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"><div class="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] backdrop-blur-md p-8 sm:p-12 relative overflow-hidden reveal"><div class="absolute -top-20 -right-20 w-60 h-60 rounded-full opacity-20" style="background: radial-gradient(circle, var(--accent), transparent 70%); filter: blur(40px);"></div><div class="absolute -bottom-24 -left-16 w-60 h-60 rounded-full opacity-15" style="background: radial-gradient(circle, var(--accent-3), transparent 70%); filter: blur(40px);"></div><div class="relative"><div class="flex items-center gap-3 mb-6"><div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#ff6b4a] to-[#ffb547] flex items-center justify-center logo-mark"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#1a0a0a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0 0-9h-1.8A7 7 0 1 0 4 14.5"/></svg></div><h2 class="font-display font-bold text-2xl sm:text-3xl">Acerca de AppCielo</h2></div><p class="text-[color:var(--muted)] leading-relaxed mb-5"><strong class="text-[color:var(--fg)]">AppCielo</strong> nació de una idea simple: reunir todas las aplicaciones de ParaísoFK en un solo cielo, accesibles desde cualquier lugar, sin tiendas de por medio ni interferencias. Es nuestra tienda personal, hecha a medida, donde cada aplicación tiene su hogar: su icono, su descripción, sus capturas y su enlace directo de descarga.</p><p class="text-[color:var(--muted)] leading-relaxed mb-8">Pensada para crecer con cada nuevo lanzamiento: cada aplicación que creamos en ParaísoFK encuentra su lugar automáticamente en el catálogo, los destacados y las novedades. Tu cielo de aplicaciones, siempre a un toque de distancia.</p><div class="grid grid-cols-1 sm:grid-cols-3 gap-4"><div class="p-5 rounded-2xl bg-[color:var(--bg-2)] border border-[color:var(--border)]"><div class="w-10 h-10 rounded-xl bg-[color:var(--surface-2)] flex items-center justify-center mb-3"><i data-lucide="download" class="w-5 h-5 text-[color:var(--accent-2)]"></i></div><h3 class="font-display font-semibold mb-1">Descargas directas</h3><p class="text-xs text-[color:var(--muted)]">Cada app con su enlace APK específico, sin intermediarios.</p></div><div class="p-5 rounded-2xl bg-[color:var(--bg-2)] border border-[color:var(--border)]"><div class="w-10 h-10 rounded-xl bg-[color:var(--surface-2)] flex items-center justify-center mb-3"><i data-lucide="infinity" class="w-5 h-5 text-[color:var(--accent-3)]"></i></div><h3 class="font-display font-semibold mb-1">Siempre creciendo</h3><p class="text-xs text-[color:var(--muted)]">Nuevas apps de ParaísoFK llegan solas al catálogo.</p></div><div class="p-5 rounded-2xl bg-[color:var(--bg-2)] border border-[color:var(--border)]"><div class="w-10 h-10 rounded-xl bg-[color:var(--surface-2)] flex items-center justify-center mb-3"><i data-lucide="smartphone" class="w-5 h-5 text-[color:var(--accent)]"></i></div><h3 class="font-display font-semibold mb-1">Experiencia nativa</h3><p class="text-xs text-[color:var(--muted)]">Diseñada para ofrecerte una experiencia fluida en tu dispositivo.</p></div></div></div></div></div></section>
+
+  <footer class="border-t border-[color:var(--border)] py-10 mt-8"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-5"><div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ff6b4a] to-[#ffb547] flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="#1a0a0a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0 0-9h-1.8A7 7 0 1 0 4 14.5"/></svg></div><span class="font-display font-bold">AppCielo</span><span class="text-xs text-[color:var(--muted-2)] ml-1">· Tu cielo de aplicaciones</span></div><div class="flex items-center gap-3"><div class="dev-badge px-4 py-2 rounded-full flex items-center gap-2"><span class="text-xs text-[color:var(--muted-2)]">Desarrollado por</span><span class="text-sm font-display font-bold text-gradient">ParaísoFK</span></div><a href="https://www.instagram.com/frnklyn.fk?stkn=MWQ2NGlvcG55NHVjaw==" target="_blank" rel="noopener noreferrer" class="ig-btn px-4 py-2 rounded-full flex items-center gap-2 text-sm font-semibold" aria-label="Síguenos en Instagram @frnklyn.fk"><i data-lucide="instagram" class="w-4 h-4"></i><span>@frnklyn.fk</span></a></div></div></footer>
+
+  <div id="app-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-hidden="true"><div class="modal-panel bg-[color:var(--bg-2)] border border-[color:var(--border-strong)] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"><div id="modal-content"></div></div></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const apps = [
+      {
+        id: 'agua-viva', name: 'Agua Viva', tagline: 'Tu río de Palabra, todos los días',
+        description: 'Lee la Biblia, estudia por tema, juega y recibe un versículo diario.',
+        longDescription: 'Agua Viva es tu aplicación bíblica completa. Lee la Biblia entera (Reina-Valera 1960) con sus 66 libros, estudia la Palabra por temas como amor, fe, esperanza, paz, fortaleza o ansiedad, pon a prueba tu conocimiento con el juego bíblico y recibe un versículo cada mañana y cada noche.',
+        icon: 'https://z-cdn-media.chatglm.cn/files/480142a6-8ad2-486c-801c-7f506cf25b6b.jpg?auth_key=1890791142-2c3058ccd60c4efaa09dbd63240d0291-0-135e75ae400bab709475aa8d5205a332',
+        category: 'Espiritualidad', version: '1.0.0', size: '14 MB', updated: 'Octubre 2024', developer: 'ParaísoFK',
+        featured: true, isNew: true,
+        screenshots: [
+          'https://z-cdn-media.chatglm.cn/files/bfbff35b-f167-461b-b783-37d011a316cc.png?auth_key=1890793285-7a93ddc1d8184da78c6e96dadf37239b-0-6817982f66f98d255778f35118a02f3e',
+          'https://z-cdn-media.chatglm.cn/files/b9ba883b-aec4-4840-af6f-a825aab8aaf7.png?auth_key=1890793285-5179b924b0d04adba258232f3d2ddf0a-0-264298b971df3567e76b9265fe33a3cd'
+        ],
+        downloadUrl: 'https://sbu0copx5j16k4lk.public.blob.vercel-storage.com/apks/1790962174126-app3050353-r3tw0z.apk'
+      },
+      {
+        id: 'artboard', name: 'ArtBoard', tagline: 'Tu estudio de dibujo profesional en el bolsillo',
+        description: 'Lienzos ilimitados, pinceles avanzados y herramientas profesionales para crear arte donde estés.',
+        longDescription: 'ArtBoard es una aplicación de dibujo y arte profesional diseñada para artistas, ilustradores y creadores. Crea en lienzos ilimitados con pinceles avanzados, capas, selección por color y una completa paleta de herramientas profesionales.',
+        icon: 'https://z-cdn-media.chatglm.cn/files/9bd4bd55-d4b8-4997-b12c-74523264c144.png?auth_key=1890793700-8bc66ed718164df5b055cf8105020218-0-911df9ae924a6baec6e6fcda8f1cfb29',
+        category: 'Diseño', version: '1.0.0', size: '32 MB', updated: 'Octubre 2024', developer: 'ParaísoFK',
+        featured: true, isNew: true,
+        screenshots: [
+          'https://z-cdn-media.chatglm.cn/files/586c2012-6c6c-40c6-ade6-84e5cbf0443f.png?auth_key=1890971726-160761653c964eb6968906bdcffee624-0-c3946221fc4c98817b4d3a06e0685d79',
+          'https://z-cdn-media.chatglm.cn/files/f2999bfd-1921-4d5c-a5ce-69d84bdb3cf3.png?auth_key=1890971726-2a19ae7cb5fb49b8932101898daf8fe9-0-c3cf2aa7b3b2b33c9d9b1acbaf55f29d'
+        ],
+        downloadUrl: 'https://sbu0copx5j16k4lk.public.blob.vercel-storage.com/apks/1790892807984-artboard-v1.0.0.apk'
+      },
+      {
+        id: 'lumo2d', name: 'Lumo2D', tagline: 'Crea · Anima · Da vida',
+        description: 'Crea animaciones 2D cuadro a cuadro con una interfaz intuitiva y herramientas profesionales.',
+        longDescription: 'Lumo2D es una aplicación de animación 2D frame-by-frame diseñada para animadores, ilustradores y creadores audiovisuales. Crea animaciones tradicionales cuadro a cuadro, gestiona capas y tiempos, exporta en alta calidad y da vida a tus personajes e historias.',
+        icon: 'https://picture-to-link.lovable.app/api/public/i/228e5d7c-2133-43f3-ab82-6786b650e5b5.png',
+        category: 'Animación', version: '1.0.0', size: '28 MB', updated: 'Octubre 2024', developer: 'ParaísoFK',
+        featured: true, isNew: true, screenshots: [], downloadUrl: ''
+      },
+      {
+        id: 'currigo', name: 'Currigo⭐', tagline: 'Crea tu currículum profesional en minutos',
+        description: 'Diseña currículums elegantes y modernos con plantillas, exportación PDF y edición intuitiva.',
+        longDescription: 'Currigo⭐ es la aplicación definitiva para crear currículums profesionales que destacan. Elige entre plantillas modernas y elegantes, completa tus datos personales, experiencia, educación y habilidades, y exporta tu CV en PDF listo para enviar.',
+        icon: 'https://picture-to-link.lovable.app/api/public/i/5476b6ae-b305-4b91-9e53-c458475cb942.png',
+        category: 'Productividad', version: '1.0.0', size: '18 MB', updated: 'Octubre 2024', developer: 'ParaísoFK',
+        featured: true, isNew: true, screenshots: [], downloadUrl: ''
+      },
+      {
+        id: 'anitop', name: 'Anitop', tagline: 'Explora y descubre el mundo del anime',
+        description: 'Descubre nuevos animes y series de todo el mundo, con estrenos, recomendaciones y novedades.',
+        longDescription: 'Anitop es tu puerta de entrada al mundo del anime y las series. Explora y descubre los últimos estrenos, sigue tus series favoritas, recibe recomendaciones personalizadas y mantente al día con los nuevos lanzamientos de cada temporada. Con una interfaz moderna y ágil, Anitop te conecta con el contenido que estás buscando y con aquello que ni sabías que existía, desde Japón hasta todo el mundo.',
+        icon: 'https://picture-to-link.lovable.app/api/public/i/68968558-863c-4667-830c-6e7360b02575.png',
+        category: 'Entretenimiento', version: '1.0.0', size: '22 MB', updated: 'Octubre 2024', developer: 'ParaísoFK',
+        featured: true, isNew: true,
+        screenshots: [
+          // 📸 Captura 1 — Sousou no Frieren: detalle del anime con puntuación 9.26,
+          //    28 episodios, 2023. Botón "Mejores de la Historia" y barra de búsqueda.
+          'https://z-cdn-media.chatglm.cn/files/0e051f7b-db54-44e6-96f2-f015285b73bc.png?auth_key=1890971726-4c1cab63f5f44c5a9e10ccd33e086ad8-0-452cc1a59583d47d54706e82a413842b',
+          // 📸 Captura 2 — Re:Zero 4ta temporada (9.16, 19 eps, 2026) y
+          //    Fullmetal Alchemist con corazón de favorito.
+          'https://z-cdn-media.chatglm.cn/files/b8ec30ea-5221-46b8-bd5b-cb59e697c27e.png?auth_key=1890971726-19c777081ef14132a739b97d2657830f-0-a3c2e2cdc8bf3d0943105c70ae4b5761',
+          // 📸 Captura 3 — Fullmetal Alchemist: Brotherhood (9.11, 64 eps, 2009) y
+          //    Steel Ball Run / JoJo (9.1) en lista de mejores.
+          'https://z-cdn-media.chatglm.cn/files/dc2e8b73-6176-4d77-911c-14a6510d465f.png?auth_key=1890971726-cc10d080e89c4fb791cab1ad5e8a1f8c-0-f08aac992eb771f2f73122d2a0cd33cb',
+          // 📸 Captura 4 — Steins;Gate (9.07, 24 eps, 2011) y Chainsaw Man Movie:
+          //    Reze-hen (9.06, 1 ep) con póster cinematográfico.
+          'https://z-cdn-media.chatglm.cn/files/79eda4ef-b7ef-4884-8cb2-b54e5214c5e2.png?auth_key=1890971726-1bbd86a73a0e4dafbb67e792462be9e7-0-4a4a4f3ca9dd4fe795ee6f100ae70650',
+          // 📸 Captura 5 — Shingeki no Kyojin Season 3 Part 2 (9.05, 10 eps, 2019)
+          //    con escena de batalla y otra serie con fondo espacial.
+          'https://z-cdn-media.chatglm.cn/files/341730f4-9bfd-45b4-b066-1def85f49674.png?auth_key=1890971726-4768226934884fd5b9408e354a129dbc-0-e31119e7ab142657e5f588db1fc3f3bd'
+        ],
+        downloadUrl: 'https://sbu0copx5j16k4lk.public.blob.vercel-storage.com/apks/1790968746817-app3906643-zugh8j.apk'
+      }
+    ];
+
+    const fixedCategories = ['Todas', 'Espiritualidad', 'Diseño', 'Animación', 'Productividad', 'Entretenimiento', 'Juegos', 'Herramientas', 'Salud', 'Social'];
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => document.querySelectorAll(s);
+    let currentCategory = 'Todas';
+    let currentSearch = '';
+
+    async function downloadApk(url, appName, btnElement) {
+      const filename = appName.toLowerCase().replace(/[^a-z0-9]/g, '-') + '.apk';
+      const originalHtml = btnElement.innerHTML;
+      const spinner = '<div class="w-4 h-4 rounded-full border-2 border-[#1a0a0a]/25 border-t-[#1a0a0a] spin"></div>';
+      function setBtn(html) { btnElement.classList.add('loading'); btnElement.innerHTML = html; if (window.lucide) lucide.createIcons(); }
+      setBtn('<span class="flex items-center gap-2">' + spinner + '<span>Iniciando...</span></span>');
+      const tempElements = [];
+      setTimeout(() => { tempElements.forEach(el => { if (document.body.contains(el)) document.body.removeChild(el); }); }, 60000);
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const total = parseInt(response.headers.get('content-length') || 0);
+        if (response.body && total > 0) {
+          const reader = response.body.getReader();
+          const chunks = []; let received = 0;
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value); received += value.length;
+            const percent = Math.round((received / total) * 100);
+            setBtn('<span class="relative z-10 flex items-center gap-2">' + spinner + '<span>' + percent + '%</span></span><div class="btn-progress-bar" style="width:' + percent + '%"></div>');
+          }
+          const blob = new Blob(chunks, { type: 'application/octet-stream' });
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href = blobUrl; a.download = filename;
+          a.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0;pointer-events:none;';
+          document.body.appendChild(a); tempElements.push(a); a.click();
+          const iframe = document.createElement('iframe'); iframe.src = blobUrl;
+          iframe.style.cssText = 'position:fixed;top:-1000px;left:-1000px;width:1px;height:1px;opacity:0;border:none;';
+          document.body.appendChild(iframe); tempElements.push(iframe);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+          setBtn('<span class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4"></i><span>Descargado</span></span>');
+          showToast(appName + ' se ha descargado.', 'success');
+        } else {
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href = blobUrl; a.download = filename;
+          a.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0;';
+          document.body.appendChild(a); tempElements.push(a); a.click();
+          const iframe = document.createElement('iframe'); iframe.src = blobUrl;
+          iframe.style.cssText = 'position:fixed;top:-1000px;left:-1000px;width:1px;height:1px;opacity:0;border:none;';
+          document.body.appendChild(iframe); tempElements.push(iframe);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+          setBtn('<span class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4"></i><span>Descargado</span></span>');
+          showToast(appName + ' se ha descargado.', 'success');
+        }
+      } catch (error) {
+        setBtn('<span class="flex items-center gap-2">' + spinner + '<span>Iniciando descarga...</span></span>');
+        const a = document.createElement('a'); a.href = url; a.download = filename; a.target = '_blank'; a.rel = 'noopener';
+        a.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0;';
+        document.body.appendChild(a); tempElements.push(a); a.click();
+        const iframe = document.createElement('iframe'); iframe.src = url;
+        iframe.style.cssText = 'position:fixed;top:-1000px;left:-1000px;width:1px;height:1px;opacity:0;border:none;';
+        document.body.appendChild(iframe); tempElements.push(iframe);
+        await new Promise(r => setTimeout(r, 2000));
+        showToast('Descarga de ' + appName + ' iniciada.', 'success');
+      }
+      setTimeout(() => { btnElement.classList.remove('loading'); btnElement.innerHTML = originalHtml; if (window.lucide) lucide.createIcons(); }, 3000);
+    }
+
+    function buildCategories() { const appCats = [...new Set(apps.map(a => a.category))]; const cats = [...new Set([...fixedCategories, ...appCats])]; const container = $('#categories'); container.innerHTML = ''; cats.forEach(cat => { const btn = document.createElement('button'); btn.className = 'chip px-4 py-2 rounded-full text-sm' + (cat === currentCategory ? ' active' : ''); btn.textContent = cat; btn.dataset.cat = cat; btn.addEventListener('click', () => { currentCategory = cat; $$('#categories .chip').forEach(c => c.classList.toggle('active', c.dataset.cat === cat)); renderAll(); }); container.appendChild(btn); }); }
+    function getFilteredApps(list) { return list.filter(app => { const matchCat = currentCategory === 'Todas' || app.category === currentCategory; const q = currentSearch.trim().toLowerCase(); return matchCat && (!q || app.name.toLowerCase().includes(q) || app.description.toLowerCase().includes(q) || app.category.toLowerCase().includes(q)); }); }
+    function getIconGlow(id) { const glows = { 'agua-viva': 'water-glow', 'artboard': 'art-glow', 'lumo2d': 'lumo-glow', 'currigo': 'curri-glow', 'anitop': 'ani-glow' }; return glows[id] || 'game-glow'; }
+    function createAppCard(app) { const card = document.createElement('article'); card.className = 'app-card rounded-3xl p-5 flex flex-col'; card.setAttribute('role', 'button'); card.setAttribute('tabindex', '0'); card.setAttribute('aria-label', 'Ver detalles de ' + app.name); card.dataset.appId = app.id; const hasUrl = app.downloadUrl && app.downloadUrl.trim() !== ''; const iconHtml = (app.icon.startsWith('http') || app.icon.startsWith('data:')) ? '<img src="' + app.icon + '" alt="Icono de ' + app.name + '" loading="lazy">' : app.icon; card.innerHTML = '<div class="flex items-start gap-4 mb-4"><div class="app-icon ' + getIconGlow(app.id) + '">' + iconHtml + '</div><div class="flex-1 min-w-0"><h3 class="font-display font-bold text-lg leading-tight truncate">' + app.name + '</h3><p class="text-xs text-[color:var(--muted-2)] mb-1.5">' + app.category + ' · v' + app.version + '</p><p class="text-sm text-[color:var(--muted)] line-clamp-2 leading-snug">' + app.description + '</p></div></div><div class="mt-auto flex items-center gap-2"><button class="btn-download flex-1 px-4 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 relative overflow-hidden" data-action="download" ' + (!hasUrl ? 'disabled' : '') + '><span class="btn-content flex items-center gap-2"><i data-lucide="download" class="w-4 h-4 ' + (hasUrl ? 'btn-download-arrow' : '') + '"></i><span>' + (hasUrl ? 'Descargar' : 'No disponible todavía') + '</span></span></button><button class="px-3 py-2.5 rounded-xl bg-[color:var(--surface-2)] border border-[color:var(--border)] text-[color:var(--muted)] hover:text-[color:var(--fg)] hover:border-[color:var(--border-strong)] transition" data-action="details" aria-label="Ver detalles"><i data-lucide="info" class="w-4 h-4"></i></button></div>'; card.addEventListener('click', () => openAppModal(app.id)); card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAppModal(app.id); } }); card.querySelector('[data-action="details"]').addEventListener('click', (e) => { e.stopPropagation(); openAppModal(app.id); }); const dlBtn = card.querySelector('[data-action="download"]'); if (dlBtn) { dlBtn.addEventListener('click', (e) => { e.stopPropagation(); if (!hasUrl) { showToast('No disponible todavía.', 'info'); return; } downloadApk(app.downloadUrl, app.name, dlBtn); }); } return card; }
+    function renderGrid(selector, list) { const grid = $(selector); grid.innerHTML = ''; if (list.length === 0) { grid.innerHTML = '<div class="col-span-full text-center py-10 text-sm text-[color:var(--muted-2)]">No hay aplicaciones en esta sección todavía.</div>'; return; } list.forEach(app => grid.appendChild(createAppCard(app))); if (window.lucide) lucide.createIcons(); }
+    function renderAll() { const filtered = getFilteredApps(apps); renderGrid('#featured-grid', getFilteredApps(apps.filter(a => a.featured))); renderGrid('#new-grid', getFilteredApps(apps.filter(a => a.isNew))); renderGrid('#all-grid', filtered); $('#app-count').textContent = filtered.length + ' app' + (filtered.length !== 1 ? 's' : ''); $('#no-results').classList.toggle('hidden', filtered.length !== 0); $('#all-grid').classList.toggle('hidden', filtered.length === 0); const games = apps.filter(a => a.category === 'Juegos'); const fGames = games.filter(app => { const q = currentSearch.trim().toLowerCase(); return !q || app.name.toLowerCase().includes(q) || app.description.toLowerCase().includes(q); }); renderGrid('#games-grid', fGames); $('#games-count-badge').textContent = games.length + ' juego' + (games.length !== 1 ? 's' : ''); $('#no-games').classList.toggle('hidden', fGames.length !== 0); $('#games-grid').classList.toggle('hidden', fGames.length === 0); }
+    let toastTimer; function showToast(msg, type) { type = type || 'info'; const t = $('#toast'); const ic = type === 'success' ? 'check-circle-2' : (type === 'error' ? 'alert-circle' : 'info'); const cl = type === 'success' ? 'var(--accent-2)' : (type === 'error' ? 'var(--accent-3)' : 'var(--accent)'); t.innerHTML = '<span style="color:' + cl + '"><i data-lucide="' + ic + '" class="w-4 h-4"></i></span><span>' + msg + '</span>'; t.classList.add('show'); if (window.lucide) lucide.createIcons(); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3000); }
+    function openAppModal(appId) { const app = apps.find(a => a.id === appId); if (!app) return; const hasUrl = app.downloadUrl && app.downloadUrl.trim() !== ''; const hasShots = app.screenshots && app.screenshots.length > 0; const iconHtml = (app.icon.startsWith('http') || app.icon.startsWith('data:')) ? '<img src="' + app.icon + '" alt="Icono de ' + app.name + '" loading="lazy">' : app.icon; const shotsHtml = hasShots ? '<div class="screenshots-strip flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">' + app.screenshots.map(src => '<div class="screenshot-item flex-shrink-0 w-44 h-80 rounded-2xl overflow-hidden border border-[color:var(--border)]"><img src="' + src + '" alt="Captura de ' + app.name + '" class="w-full h-full object-cover"></div>').join('') + '</div>' : '<div class="screenshot-frame rounded-2xl p-6 text-center"><i data-lucide="image" class="w-6 h-6 mx-auto mb-2 text-[color:var(--muted-2)]"></i><p class="text-xs text-[color:var(--muted-2)]">Las capturas de pantalla aparecerán aquí.<br>Agrega las URLs en el campo <code>screenshots</code> de la app.</p></div>'; $('#modal-content').innerHTML = '<div class="relative"><div class="p-6 sm:p-8 border-b border-[color:var(--border)] sticky top-0 bg-[color:var(--bg-2)]/95 backdrop-blur z-10 rounded-t-3xl"><button class="absolute top-5 right-5 w-9 h-9 rounded-full bg-[color:var(--surface-2)] border border-[color:var(--border)] flex items-center justify-center hover:bg-[color:var(--surface)] transition" id="modal-close" aria-label="Cerrar"><i data-lucide="x" class="w-4 h-4"></i></button><div class="flex items-start gap-4 pr-10"><div class="app-icon app-icon-lg ' + getIconGlow(app.id) + '">' + iconHtml + '</div><div class="flex-1 min-w-0 pt-1"><h2 class="font-display font-bold text-2xl sm:text-3xl mb-1">' + app.name + '</h2><p class="text-sm text-[color:var(--muted)] mb-3">' + app.tagline + '</p><div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-[color:var(--muted-2)]"><span class="flex items-center gap-1"><i data-lucide="tag" class="w-3 h-3"></i> v' + app.version + '</span><span class="flex items-center gap-1"><i data-lucide="hard-drive" class="w-3 h-3"></i> ' + app.size + '</span><span class="flex items-center gap-1"><i data-lucide="folder" class="w-3 h-3"></i> ' + app.category + '</span><span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> ' + app.updated + '</span></div></div></div></div><div class="p-6 sm:p-8 space-y-7"><div class="flex flex-col sm:flex-row gap-3"><button class="btn-download flex-1 px-6 py-3.5 rounded-2xl flex items-center justify-center gap-2.5 text-base relative overflow-hidden" id="modal-download-btn" ' + (!hasUrl ? 'disabled' : '') + '><span class="btn-content flex items-center gap-2.5"><i data-lucide="download" class="w-5 h-5"></i><span>' + (hasUrl ? 'Descargar' : 'No disponible todavía') + '</span>' + (hasUrl ? '<span class="text-xs opacity-70 ml-2">· ' + app.size + '</span>' : '') + '</span></button><div class="px-4 py-3.5 rounded-2xl bg-[color:var(--surface)] border border-[color:var(--border)] flex items-center gap-2 text-xs text-[color:var(--muted)]"><i data-lucide="shield-check" class="w-4 h-4 text-[color:var(--accent-2)]"></i><span>Verificación manual</span></div></div>' + (!hasUrl ? '<div class="screenshot-frame rounded-2xl p-4 text-center text-xs text-[color:var(--muted-2)]"><i data-lucide="link-2" class="w-4 h-4 inline-block mr-1.5"></i>El enlace de descarga se publicará pronto. Pégalo en el campo <code>downloadUrl</code> de ' + app.name + '.</div>' : '') + '<div><h3 class="font-display font-semibold text-lg mb-2">Acerca de ' + app.name + '</h3><p class="text-sm text-[color:var(--muted)] leading-relaxed">' + app.longDescription + '</p></div><div><h3 class="font-display font-semibold text-lg mb-3">Capturas</h3>' + shotsHtml + '</div><div class="grid grid-cols-2 gap-3 pt-2"><div class="p-4 rounded-2xl bg-[color:var(--surface)] border border-[color:var(--border)]"><p class="text-xs text-[color:var(--muted-2)] mb-1">Desarrollador</p><p class="text-sm font-medium">' + app.developer + '</p></div><div class="p-4 rounded-2xl bg-[color:var(--surface)] border border-[color:var(--border)]"><p class="text-xs text-[color:var(--muted-2)] mb-1">Última actualización</p><p class="text-sm font-medium">' + app.updated + '</p></div><div class="p-4 rounded-2xl bg-[color:var(--surface)] border border-[color:var(--border)]"><p class="text-xs text-[color:var(--muted-2)] mb-1">Versión</p><p class="text-sm font-medium">v' + app.version + '</p></div><div class="p-4 rounded-2xl bg-[color:var(--surface)] border border-[color:var(--border)]"><p class="text-xs text-[color:var(--muted-2)] mb-1">Tamaño</p><p class="text-sm font-medium">' + app.size + '</p></div></div></div></div>'; $('#app-modal').classList.add('active'); $('#app-modal').setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; if (window.lucide) lucide.createIcons(); $('#modal-close').addEventListener('click', closeAppModal); $('#modal-download-btn').addEventListener('click', () => { if (!hasUrl) { showToast('No disponible todavía.', 'info'); return; } downloadApk(app.downloadUrl, app.name, $('#modal-download-btn')); }); }
+    function closeAppModal() { $('#app-modal').classList.remove('active'); $('#app-modal').setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+    $('#app-modal').addEventListener('click', (e) => { if (e.target === $('#app-modal')) closeAppModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#app-modal').classList.contains('active')) closeAppModal(); });
+    $('#search').addEventListener('input', (e) => { currentSearch = e.target.value; renderAll(); });
+    $('#mobile-menu-btn').addEventListener('click', () => { $('#mobile-menu').classList.toggle('hidden'); });
+    $$('#mobile-menu a').forEach(a => a.addEventListener('click', () => { $('#mobile-menu').classList.add('hidden'); }));
+    $('#filter-games-btn').addEventListener('click', () => { currentCategory = 'Juegos'; $$('#categories .chip').forEach(c => c.classList.toggle('active', c.dataset.cat === 'Juegos')); renderAll(); document.querySelector('#juegos').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    const io = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }); }, { threshold: 0.1 });
+    $$('.reveal').forEach(el => io.observe(el));
+    buildCategories(); renderAll(); if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>
